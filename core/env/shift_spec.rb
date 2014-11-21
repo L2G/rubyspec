@@ -41,17 +41,27 @@ with_feature :encoding do
     it "uses the locale encoding if Encoding.default_internal is nil" do
       Encoding.default_internal = nil
 
-      pair = ENV.shift
-      pair.first.encoding.should equal(Encoding.find("locale"))
-      pair.last.encoding.should equal(Encoding.find("locale"))
+      orig = ENV.to_hash
+      begin
+        pair = ENV.shift
+        pair.first.encoding.should equal(Encoding.find("locale"))
+        pair.last.encoding.should equal(Encoding.find("locale"))
+      ensure
+        ENV.replace orig
+      end
     end
 
     it "transcodes from the locale encoding to Encoding.default_internal if set" do
       Encoding.default_internal = Encoding::IBM437
 
-      pair = ENV.shift
-      pair.first.encoding.should equal(Encoding::IBM437)
-      pair.last.encoding.should equal(Encoding::IBM437)
+      orig = ENV.to_hash
+      begin
+        pair = ENV.shift
+        pair.first.encoding.should equal(Encoding::IBM437)
+        pair.last.encoding.should equal(Encoding::IBM437)
+      ensure
+        ENV.replace orig
+      end
     end
   end
 end
